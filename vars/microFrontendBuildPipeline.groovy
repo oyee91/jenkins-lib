@@ -13,8 +13,8 @@ def call(body) {
             try {
                 stage("Checkout") {
                     checkout scm
-                    def js_package = readJSON("package.json")
-                    def version_prefix = js_package["version"]
+                    def js_package = readJSON file: 'package.json'
+                    def version_prefix = js_package.version
                     echo "Version ${version_prefix}"
                     currentBuild.displayName = "${version_prefix}" //env.BUILD_NUMBER
                     echo "ok"
