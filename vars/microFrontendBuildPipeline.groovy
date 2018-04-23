@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 def call(body) {
 
     def config = [:]
@@ -11,12 +13,16 @@ def call(body) {
             try {
                 stage("Checkout") {
                     checkout scm
+                    def js_package = new JsonSlurper().parse(new File("package.json"))
+                    def version_prefix = js_package.version
+                    echo "Version ${version_prefix}"
+                    currentBuild.displayName = "${version_prefix}" //env.BUILD_NUMBER
                 }
 
                 stage("Install") {
                     withCredentials([[$class  : 'StringBinding', credentialsId: 'NEXUS_NPM_AUTH',
                                       variable: 'NEXUS_NPM_AUTH']]) {
-                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} yarn version --no-git-tag-version --new-version \$(cat package.json | awk -F\\\" '/\\\"version\\\"/{print \$4}')-\$(date -u +'%Y%m%dT%H%M%S')-\$(git rev-parse HEAD)"
+                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} yarn version --no-git-tag-version --new-version ${version_prefix}"
                         sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} yarn install"
                     }
                 }
@@ -31,21 +37,30 @@ def call(body) {
                 stage("Test") {
                     withCredentials([[$class  : 'StringBinding', credentialsId: 'NEXUS_NPM_AUTH',
                                       variable: 'NEXUS_NPM_AUTH']]) {
-                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} yarn add jest-junit"
-                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} yarn test --testResultsProcessor=\"jest-junit\""
+                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} yarn test-ci"
                     }
                 }
 
-                stage("Rollup") {
-                    sh "npm install -g rollup"
-                    sh "rollup -c"
+                stage("Tag") {
+
                 }
 
-                stage("Publish to nexus") {
+                stage("Build") {
                     withCredentials([[$class  : 'StringBinding', credentialsId: 'NEXUS_NPM_AUTH',
                                       variable: 'NEXUS_NPM_AUTH']]) {
-                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} npm publish"
+                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} yarn build"
                     }
+                }
+
+//                stage("Publish to nexus") {
+//                    withCredentials([[$class  : 'StringBinding', credentialsId: 'NEXUS_NPM_AUTH',
+//                                      variable: 'NEXUS_NPM_AUTH']]) {
+//                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} npm publish"
+//                    }
+//                }
+
+                stage("Deploy") {
+                    s3Upload(file: 'lib/', bucket: '847616476486-microfrontends2', path: "${js_package}/${version_prefix}/")
                 }
             } finally {
                 junit 'lint-report.xml'
