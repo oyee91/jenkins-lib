@@ -13,8 +13,10 @@ def call(body) {
             try {
                 stage("Checkout") {
                     checkout scm
-                    sh "ls -la"
-                    echo new File(".").list()
+                    echo new File(".").toString()
+                    new File(".").list().each {
+                         echo it
+                    }
                     def js_package = new JsonSlurper().parse(new File("package.json"))
                     def version_prefix = js_package.version
                     echo "Version ${version_prefix}"
