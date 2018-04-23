@@ -1,5 +1,3 @@
-import groovy.json.JsonSlurper
-
 def call(body) {
 
     def config = [:]
@@ -70,8 +68,8 @@ def call(body) {
 //                    }
 //                }
 
-            stage("Deploy") {
-                s3Upload(file: 'lib/', bucket: '847616476486-microfrontends2', path: "${name}/${version}/")
+            stage("Upload to S3") {
+                s3Upload(file: 'lib/', bucket: '847616476486-microfrontends2', path: "${name}/${version}/", acl: "PublicRead")
             }
 
         }
