@@ -13,9 +13,9 @@ def call(body) {
             try {
                 stage("Checkout") {
                     checkout scm
-                    echo "1"
+                    sh "ls -la"
+                    echo new File(".").list()
                     def js_package = new JsonSlurper().parse(new File("package.json"))
-                    echo "2"
                     def version_prefix = js_package.version
                     echo "Version ${version_prefix}"
                     currentBuild.displayName = "${version_prefix}" //env.BUILD_NUMBER
