@@ -69,7 +69,7 @@ def call(body) {
 //                }
 
             stage("Upload to S3") {
-                s3Upload(file: 'lib/', bucket: '847616476486-microfrontends2', path: "${name}/${version}/", acl: "PublicRead")
+                s3Upload(file: 'lib/', bucket: '847616476486-microfrontends2', path: "${name}/${version}/")
             }
 
         }
