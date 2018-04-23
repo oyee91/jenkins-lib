@@ -14,8 +14,8 @@ def call(body) {
                 stage("Checkout") {
                     checkout scm
                     def js_package = readJSON file: 'package.json'
-                    def (version_major, version_minor) = js_package.version.tokenize(".")
-                    def version_new = "${version_major}.${version_minor}.${env.BUILD_NUMBER}"
+                    def version_old = js_package.version.tokenize(".")
+                    def version_new = "${version_old[0]}.${version_old[1]}.${env.BUILD_NUMBER}"
                     currentBuild.displayName = "${version_new}"
                 }
 //
