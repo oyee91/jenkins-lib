@@ -60,7 +60,11 @@ def call(body) {
 
             stage("Tag") {
                 withCredentials([usernamePassword(credentialsId: credentialId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    echo env
+                    sh 'env > env.txt'
+                    for (String i : readFile('env.txt').split("\r?\n")) {
+                        println i
+                    }
+                    sh "printenv"
                     sh """
                         git config --global user.name "Jenkins" # TODO move to git config
                         git config --global user.email "jenkins@digitaldealer"
