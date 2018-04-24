@@ -1,4 +1,5 @@
 def call(body) {
+    def credentialId = 'dd_ci'
 
     def config = [:]
 
@@ -58,13 +59,14 @@ def call(body) {
             }
 
             stage("Tag") {
-                sh """
-                    cat .git/config
-                    git config --global user.name "Jenkins"
-                    git config --global user.email "jenkins@digitaldealer"
-                    git tag -am "By ${currentBuild.projectName}" v${version}
-                    #git push origin v${version}
-                """
+                withCredentials([usernamePassword(credentialsId: credentialId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    sh """
+                        git config --global user.name "Jenkins"
+                        git config --global user.email "jenkins@digitaldealer"
+                        git tag -am "By ${currentBuild.projectName}" v${version}
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository} v${version}
+                    """
+                }
             }
 
             stage("Publish to nexus") {
