@@ -9,11 +9,12 @@ def call(body) {
 
     def version
     def name
+    def scmVars
 
     dockerNode(dockerImage: 'stakater/frontend-tools:latest') {
         container(name: 'docker') {
             stage("Checkout") {
-                checkout scm
+                scmVars = checkout scm
                 def js_package = readJSON file: 'package.json'
                 def version_old = js_package.version.tokenize(".")
                 version = "${version_old[0]}.${version_old[1]}.${env.BUILD_NUMBER}"
@@ -60,16 +61,9 @@ def call(body) {
 
             stage("Tag") {
                 withCredentials([usernamePassword(credentialsId: credentialId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    sh 'env > env.txt'
-                    for (String i : readFile('env.txt').split("\r?\n")) {
-                        println i
-                    }
-                    sh "printenv"
                     sh """
-                        git config --global user.name "Jenkins" # TODO move to git config
-                        git config --global user.email "jenkins@digitaldealer"
                         git tag -am "By ${currentBuild.projectName}" v${version}
-                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.GIT_URL} v${version}
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${scmVars.GIT_URL} v${version}
                     """
                 }
             }
