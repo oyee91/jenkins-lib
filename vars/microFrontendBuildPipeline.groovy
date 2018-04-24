@@ -62,6 +62,8 @@ def call(body) {
             stage("Tag") {
                 withCredentials([usernamePassword(credentialsId: credentialId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     sh """
+                        git config user.name "Jenkins" # TODO move to git config
+                        git config user.email "jenkins@digitaldealer"
                         git tag -am "By ${currentBuild.projectName}" v${version}
                         git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${scmVars.GIT_URL} v${version}
                     """
