@@ -15,7 +15,6 @@ def call(body) {
         container(name: 'docker') {
             stage("Checkout") {
                 scmVars = checkout scm
-                echo scmVars.collect({environmentVariable ->  "${environmentVariable.key} = ${environmentVariable.value}"}).join("\n")
                 def js_package = readJSON file: 'package.json'
                 def version_old = js_package.version.tokenize(".")
                 version = "${version_old[0]}.${version_old[1]}.${env.BUILD_NUMBER}"
@@ -66,7 +65,7 @@ def call(body) {
                         git config user.name "Jenkins" # TODO move to git config
                         git config user.email "jenkins@digitaldealer"
                         git tag -am "By ${currentBuild.projectName}" v${version}
-                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${scmVars.GIT_URL} v${version}
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${scmVars.GIT_URL.substring(8)} v${version}
                     """
                 }
             }
