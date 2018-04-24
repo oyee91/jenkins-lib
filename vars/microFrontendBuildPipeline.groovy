@@ -64,7 +64,7 @@ def call(body) {
                         git config --global user.name "Jenkins"
                         git config --global user.email "jenkins@digitaldealer"
                         git tag -am "By ${currentBuild.projectName}" v${version}
-                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository} v${version}
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${GIT_URL} v${version}
                     """
                 }
             }
