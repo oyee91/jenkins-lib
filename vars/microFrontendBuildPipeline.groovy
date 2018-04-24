@@ -59,6 +59,10 @@ def call(body) {
 
             stage("Tag") {
                 sh """
+                    chmod 600 /root/.ssh-git/ssh-key
+                    eval `ssh-agent -s`
+                    ssh-add /root/.ssh-git/ssh-key
+
                     git config --global user.name "Jenkins"
                     git config --global user.email "jenkins@digitaldealer"
                     git tag -am "By ${currentBuild.projectName}" v${version}
