@@ -15,6 +15,7 @@ def call(body) {
         container(name: 'docker') {
             stage("Checkout") {
                 scmVars = checkout scm
+                echo scmVars.collect({environmentVariable ->  "${environmentVariable.key} = ${environmentVariable.value}"}).join("\n")
                 def js_package = readJSON file: 'package.json'
                 def version_old = js_package.version.tokenize(".")
                 version = "${version_old[0]}.${version_old[1]}.${env.BUILD_NUMBER}"
