@@ -57,12 +57,17 @@ def call(body) {
                 }
             }
 
-                stage("Publish to nexus") {
-                    withCredentials([[$class  : 'StringBinding', credentialsId: 'NEXUS_NPM_AUTH',
-                                      variable: 'NEXUS_NPM_AUTH']]) {
-                        sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} npm publish"
-                    }
+            stage("Tag") {
+                sh "git tag -am \"\" v${version}"
+                sh "git push origin v${version}"
+            }
+
+            stage("Publish to nexus") {
+                withCredentials([[$class  : 'StringBinding', credentialsId: 'NEXUS_NPM_AUTH',
+                                  variable: 'NEXUS_NPM_AUTH']]) {
+                    sh "NEXUS_NPM_AUTH=${NEXUS_NPM_AUTH} npm publish"
                 }
+            }
 
             stage("Upload to S3") {
                 s3Upload(file: 'lib/', bucket: "${params.BUCKET}", path: "${name}/${version}/")
