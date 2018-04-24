@@ -1,5 +1,5 @@
 #!/usr/bin/groovy
-@Library('github.com/stakater/fabric8-pipeline-library@master')
+@Library('github.com/stakater/fabric8-pipeline-library@master') _
 
 def call(body) {
 
