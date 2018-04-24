@@ -1,3 +1,6 @@
+#!/usr/bin/groovy
+@Library('github.com/stakater/fabric8-pipeline-library@master')
+
 def call(body) {
 
     def config = [:]
@@ -8,6 +11,8 @@ def call(body) {
 
     def version
     def name
+
+    def git = new io.stakater.vc.Git()
 
     dockerNode(dockerImage: 'stakater/frontend-tools:latest') {
         container(name: 'docker') {
@@ -58,8 +63,7 @@ def call(body) {
             }
 
             stage("Tag") {
-                sh "git tag -am \"\" v${version}"
-                sh "git push origin v${version}"
+                git.createTagAndPush(WORKSPACE, version)
             }
 
             stage("Publish to nexus") {
