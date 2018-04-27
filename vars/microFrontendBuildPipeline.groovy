@@ -18,7 +18,7 @@ def call(body) {
                 def js_package = readJSON file: 'package.json'
                 def version_base = js_package.version.tokenize(".")
                 int version_last = sh(
-                        script: "git tag | awk -F. '/v${version_base[0]}.${version_base[1]}/{print \$3}' | sort -g  | tail -1",
+                        script: "git tag | awk -F. 'BEGIN {print \"-1\"} /v${version_base[0]}.${version_base[1]}/{print \$3}' | sort -g  | tail -1",
                         returnStdout: true
                 )
 
