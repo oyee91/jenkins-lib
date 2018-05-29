@@ -62,6 +62,7 @@ def call(Map parameters = [:], body) {
                             }
 
                             rc = getDeploymentResourcesK8s {
+                                replicas = '1'
                                 projectName = serviceName
                                 port = 8080
                                 label = 'node'
@@ -72,9 +73,9 @@ def call(Map parameters = [:], body) {
                                 livenessProbePath = "/health"
                                 ingressClass = "external-ingress"
                                 resourceRequestCPU = "20m"
-                                resourceRequestMemory = "200Mi"
+                                resourceRequestMemory = "500Mi"
                                 resourceLimitCPU = "100m"
-                                resourceLimitMemory = "1100Mi"
+                                resourceLimitMemory = "500Mi"
                             }
 
                             writeFile file: "deployment.yaml", text: rc
