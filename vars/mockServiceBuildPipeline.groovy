@@ -47,7 +47,6 @@ def call(Map parameters = [:], body) {
 
                             container('clients') {
                                 sh 'ping registry.npmjs.org -c 1'
-                                sh 'wget registry.npmjs.org'
                                 sh 'curl registry.npmjs.org'
                                 newImageName = "${dockerRepo}/${serviceName}:${buildVersion}"
                                 sh "docker build -t ${newImageName} ."
