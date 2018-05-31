@@ -47,7 +47,6 @@ def call(Map parameters = [:], body) {
 
                             container('clients') {
                                 sh 'ping registry.npmjs.org -c 1'
-                                sh 'curl registry.npmjs.org'
                                 newImageName = "${dockerRepo}/${serviceName}:${buildVersion}"
                                 sh "docker build -t ${newImageName} ."
                                 withCredentials([usernamePassword(credentialsId: credentialId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
