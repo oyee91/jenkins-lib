@@ -26,7 +26,8 @@ def call(Map parameters = [:], body) {
     withSlackNotificatons() {
 
         podTemplate(envVars: [envVar(key: 'FABRIC8_DOCKER_REGISTRY_SERVICE_HOST', value: dockerRepo),
-                              envVar(key: 'FABRIC8_DOCKER_REGISTRY_SERVICE_PORT', value: '443')],
+                              envVar(key: 'FABRIC8_DOCKER_REGISTRY_SERVICE_PORT', value: '443'),
+                              envVar(key: 'DOCKER_API_VERSION', value: '1.32')],
                 volumes: [
                         secretVolume(secretName: "${kubeConfig}", mountPath: '/home/jenkins/.kube'),
                 ])
