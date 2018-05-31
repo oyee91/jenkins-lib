@@ -31,7 +31,7 @@ def call(Map parameters = [:], body) {
                         secretVolume(secretName: "${kubeConfig}", mountPath: '/home/jenkins/.kube'),
                 ])
                 {
-                    clientsK8sNode(clientsImage: 'stakater/docker-with-git:17.10') {
+                    clientsK8sNode(clientsImage: 'stakater/docker-with-git:17.09') {
                         stage("Checkout") {
                             scmVars = checkout scm
                             int version_last = sh(
