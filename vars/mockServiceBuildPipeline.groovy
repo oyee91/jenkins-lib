@@ -46,7 +46,9 @@ def call(Map parameters = [:], body) {
                             echo 'NOTE: running pipelines for the first time will take longer as build and base docker images are pulled onto the node'
 
                             container('clients') {
-                                sh 'ping www.aftonbladet.se'
+                                sh 'ping registry.npmjs.org -c 1'
+                                sh 'wget registry.npmjs.org'
+                                sh 'curl registry.npmjs.org'
                                 newImageName = "${dockerRepo}/${serviceName}:${buildVersion}"
                                 sh "docker build -t ${newImageName} ."
                                 withCredentials([usernamePassword(credentialsId: credentialId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
