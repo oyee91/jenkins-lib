@@ -184,9 +184,6 @@ def call(body) {
                             }
                         }
 
-                        stage('Deploy to prod') {
-                            build job: "${project}-prod-deploy", parameters: [[$class: 'StringParameterValue', name: 'VERSION', value: buildVersion]]
-                        }
                     }
 
                 }
