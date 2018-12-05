@@ -68,7 +68,7 @@ def call(body) {
                                 container(name: 'maven') {
 
                                     stage("checkout") {
-                                        scmVars = checkout([$class: 'GitSCM', branches: [[name: env.gitlabBranch]], userRemoteConfigs: scm.getUserRemoteConfigs()])
+                                        scmVars = checkout([$class: 'GitSCM', branches: [[name: env.gitlabBranch ?: 'master']], userRemoteConfigs: scm.getUserRemoteConfigs()])
                                         def pom = readMavenPom file: 'pom.xml'
                                         project = pom.artifactId
                                         buildVersion = getVersion()
