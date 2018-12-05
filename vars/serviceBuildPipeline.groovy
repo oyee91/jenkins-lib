@@ -139,6 +139,7 @@ String getBJVersion(config) {
     return "${versionPrefix}.${version_last + 1}"
 }
 
+
 static String getMRVersion(branchName, currentBuild) {
     def buildNumber = currentBuild.number
     return "${branchName}-${buildNumber}"
